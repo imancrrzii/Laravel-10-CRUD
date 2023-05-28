@@ -56,11 +56,9 @@ class PostController extends Controller
             'title' => 'required|min:5',
             'content' => 'required|min:10',
         ]);
-
         $post = Post::findOrFail($id);
 
         if($request->hasFile('image')){
-
             $image = $request->file('image');
             $image->storeAs('public/posts', $image->hashName());
 
@@ -78,5 +76,12 @@ class PostController extends Controller
             ]);
         }
         return redirect()->route('posts.index')->with(['success' => 'Data berhasil di update']);
+    }
+
+    public function destroy($id){
+        $post = Post::findOrFail($id);
+        Storage::delete('public/posts/'.$post->image);
+        $post->delete();
+        return redirect()->route('posts.index')->with(['success' => 'Data berhasil dihapus']);
     }
 }
